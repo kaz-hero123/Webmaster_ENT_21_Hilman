@@ -1,34 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Detail Berita</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6; }
-        h1 { color: #2c3e50; margin-bottom: 5px; }
-        a { color: #3498db; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .btn { display: inline-block; background: #3498db; color: white; padding: 8px 12px; border-radius: 4px; margin-top: 20px; }
-        .btn:hover { background: #2980b9; text-decoration: none; }
-        .content-box { background: #fafafa; padding: 20px; border-radius: 5px; border: 1px solid #ddd; margin-top: 20px; }
-    </style>
+    <title>{{ $post->title }} - Portal Berita</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <h1>{{ $post->title }}</h1>
-    <p style="color: #7f8c8d; margin-top: 0;"><strong>Kategori:</strong> {{ $post->category ? $post->category->name : 'Tanpa Kategori' }}</p>
-    
-    @if($post->image)
-        <div style="margin: 20px 0;">
-            <img src="{{ asset('storage/' . $post->image) }}" alt="Gambar Berita" style="max-width: 100%; height: auto; border-radius: 5px;">
-        </div>
-    @endif
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <div class="content-box">
-        <p style="white-space: pre-wrap;">{{ $post->content }}</p>
-    </div>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ route('posts.index') }}" class="text-xl font-bold text-blue-600 tracking-tight flex items-center gap-2 hover:text-blue-700 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            @if($post->image)
+                <div class="w-full h-[400px] bg-gray-100">
+                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                </div>
+            @endif
+
+            <div class="p-8 sm:p-12">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                        {{ $post->category ? $post->category->name : 'Uncategorized' }}
+                    </span>
+                    <span class="text-sm text-gray-500 font-medium">
+                        Diterbitkan {{ $post->created_at->format('d M Y') }}
+                    </span>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-8">
+                    {{ $post->title }}
+                </h1>
+
+                <div class="prose prose-lg prose-blue max-w-none text-gray-700 whitespace-pre-wrap">
+                    {{ $post->content }}
+                </div>
+                
+                <div class="mt-12 pt-8 border-t border-gray-100 flex justify-between items-center">
+                    <a href="{{ route('posts.index') }}" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                        &larr; Baca berita lainnya
+                    </a>
+                    
+                    <div class="flex gap-4">
+                        <a href="{{ route('posts.edit', $post->id) }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition-colors">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
     
-    <a href="{{ route('posts.index') }}" class="btn">&larr; Kembali ke Beranda</a>
+    <footer class="bg-white border-t border-gray-100 py-8 mt-auto">
+        <div class="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
+            &copy; {{ date('Y') }} Portal Berita. Dibuat untuk keperluan evaluasi.
+        </div>
+    </footer>
+
 </body>
 </html>

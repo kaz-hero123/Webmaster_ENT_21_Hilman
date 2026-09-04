@@ -1,66 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Berita</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6; }
-        h1, h2 { color: #2c3e50; }
-        a { color: #3498db; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background: #fafafa; }
-        button, .btn { background: #3498db; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 14px;}
-        button:hover, .btn:hover { background: #2980b9; }
-        .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #c0392b; }
-        .search-box { background: #eee; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
-    </style>
+    <!-- Vite: Load Tailwind CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <h1>Portal Berita 📰</h1>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-    <a href="{{ route('posts.create') }}">+ Tambah Berita Baru</a>
-
-    <hr>
-
-    <div class="search-box">
-        <form action="{{ route('posts.index') }}" method="GET" style="display: flex; gap: 10px; align-items: center;">
-            <label>Cari:</label>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Judul...">
-            
-            <label>Kategori:</label>
-            <select name="category_id">
-                <option value="">Semua Kategori</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
-
-            <button type="submit">Cari</button>
-            <a href="{{ route('posts.index') }}">Reset</a>
-        </form>
-    </div>
-
-    @forelse ($posts as $post)
-        <div class="card">
-            <h2 style="margin-top: 0;"><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></h2>
-            <p style="font-size: 13px; color: #7f8c8d;"><strong>Kategori:</strong> {{ $post->category ? $post->category->name : 'Tanpa Kategori' }}</p>
-            <p>{{ Str::limit($post->content, 120) }}</p>
-
-            <div style="margin-top: 15px;">
-                <a href="{{ route('posts.edit', $post->id) }}" class="btn" style="display: inline-block;">Edit</a>
-                <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus berita ini?')">Hapus</button>
-                </form>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ route('posts.index') }}" class="text-2xl font-bold text-blue-600 tracking-tight">
+                        Portal<span class="text-gray-900">Berita</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ route('posts.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
+                        + Tambah Berita Baru
+                    </a>
+                </div>
             </div>
         </div>
-    @empty
-        <p>Belum ada berita yang tersedia.</p>
-    @endforelse
+    </nav>
+
+    <!-- Header & Search Section -->
+    <div class="bg-blue-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6">
+                Temukan Berita Terkini
+            </h1>
+            
+            <form action="{{ route('posts.index') }}" method="GET" class="max-w-3xl mx-auto bg-white p-2 rounded-lg shadow-lg flex flex-col sm:flex-row gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul berita..." class="flex-1 px-4 py-3 border-none focus:ring-0 text-gray-900 rounded-md bg-gray-50 outline-none w-full">
+                
+                <select name="category_id" class="px-4 py-3 border-none focus:ring-0 text-gray-900 bg-gray-50 rounded-md outline-none sm:w-48 w-full border-t sm:border-t-0 sm:border-l border-gray-200">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors w-full sm:w-auto">
+                    Cari
+                </button>
+                @if(request('search') || request('category_id'))
+                    <a href="{{ route('posts.index') }}" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors w-full sm:w-auto text-center flex items-center justify-center">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+    </div>
+
+    <!-- Berita Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        @if(session('success'))
+            <div class="mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow-sm">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Berita Terbaru</h2>
+            <span class="text-sm text-gray-500">Menampilkan {{ $posts->count() }} berita</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse ($posts as $post)
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                    @if($post->image)
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="Gambar" class="w-full h-48 object-cover">
+                    @else
+                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400 text-sm">Tanpa Gambar</span>
+                        </div>
+                    @endif
+                    
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ $post->category ? $post->category->name : 'Uncategorized' }}
+                            </span>
+                            <span class="text-xs text-gray-500">{{ $post->created_at->diffForHumans() }}</span>
+                        </div>
+                        
+                        <a href="{{ route('posts.show', $post->id) }}" class="block mb-3 flex-1 group">
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                {{ $post->title }}
+                            </h3>
+                            <p class="mt-2 text-gray-600 line-clamp-3 text-sm">
+                                {{ strip_tags($post->content) }}
+                            </p>
+                        </a>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-3 items-center">
+                            <a href="{{ route('posts.edit', $post->id) }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                                Edit
+                            </a>
+                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Hapus berita ini permanen?')" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full py-12 text-center bg-white rounded-xl border border-gray-100 border-dashed">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada berita</h3>
+                    <p class="mt-1 text-sm text-gray-500">Belum ada berita yang diterbitkan atau cocok dengan pencarian.</p>
+                </div>
+            @endforelse
+        </div>
+    </main>
+
 </body>
 </html>
