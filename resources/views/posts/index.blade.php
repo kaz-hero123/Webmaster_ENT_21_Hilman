@@ -34,26 +34,33 @@
                 Temukan Berita Terkini
             </h1>
             
-            <form action="{{ route('posts.index') }}" method="GET" class="max-w-3xl mx-auto bg-white p-2 rounded-lg shadow-lg flex flex-col sm:flex-row gap-2">
+            <form action="{{ route('posts.index') }}" method="GET" class="max-w-5xl mx-auto bg-white p-2 rounded-lg shadow-lg flex flex-col md:flex-row gap-3">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul berita..." class="flex-1 px-4 py-3 border-none focus:ring-0 text-gray-900 rounded-md bg-gray-50 outline-none w-full">
                 
-                <select name="category_id" class="px-4 py-3 border-none focus:ring-0 text-gray-900 bg-gray-50 rounded-md outline-none sm:w-48 w-full border-t sm:border-t-0 sm:border-l border-gray-200">
-                    <option value="">Semua Kategori</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <div class="flex flex-col sm:flex-row gap-2 md:w-auto w-full">
+                    <select name="category_id" class="px-4 py-3 border-none focus:ring-0 text-gray-900 bg-gray-50 rounded-md outline-none w-full sm:w-40 border-t sm:border-t-0 sm:border-l border-gray-200">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors w-full sm:w-auto">
-                    Cari
-                </button>
-                @if(request('search') || request('category_id'))
-                    <a href="{{ route('posts.index') }}" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors w-full sm:w-auto text-center flex items-center justify-center">
-                        Reset
-                    </a>
-                @endif
+                    <select name="sort" class="px-4 py-3 border-none focus:ring-0 text-gray-900 bg-gray-50 rounded-md outline-none w-full sm:w-36 border-t sm:border-t-0 sm:border-l border-gray-200">
+                        <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                    </select>
+
+                    <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors w-full sm:w-auto">
+                        Cari
+                    </button>
+                    @if(request('search') || request('category_id') || request('sort'))
+                        <a href="{{ route('posts.index') }}" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors w-full sm:w-auto text-center flex items-center justify-center">
+                            Reset
+                        </a>
+                    @endif
+                </div>
             </form>
         </div>
     </div>

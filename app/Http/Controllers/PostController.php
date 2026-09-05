@@ -15,7 +15,8 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::with('category')->latest();
+        $query = Post::with('category');
+        
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -23,6 +24,12 @@ class PostController extends Controller
 
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->input('sort') === 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
         }
 
         $posts = $query->get();
