@@ -87,12 +87,17 @@
                             <div class="flex text-sm text-gray-600 justify-center">
                                 <label for="image" class="relative cursor-pointer rounded-md bg-white font-medium text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:text-blue-500 px-1">
                                     <span>Pilih file baru</span>
-                                    <input id="image" name="image" type="file" class="sr-only">
+                                    <input id="image" name="image" type="file" class="sr-only" onchange="previewImage(event)">
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
                             </div>
                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB (Akan mengganti gambar lama)</p>
                         </div>
+                    </div>
+                    <!-- Image Preview Container -->
+                    <div id="image-preview-container" class="mt-4" style="display: none;">
+                        <span class="block text-xs font-medium text-gray-500 mb-1">Preview Gambar:</span>
+                        <img id="image-preview" src="#" alt="Preview" class="h-48 w-auto object-cover rounded-md border border-gray-200 shadow-sm">
                     </div>
                 </div>
 
@@ -105,5 +110,13 @@
         </div>
     </main>
 
+    <script>
+        // Versi sangat simpel untuk level pemula
+        function previewImage(event) {
+            var image = document.getElementById('image-preview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            document.getElementById('image-preview-container').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
