@@ -84,7 +84,7 @@
             @forelse ($posts as $post)
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                     @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="Gambar" class="w-full h-48 object-cover">
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="Gambar" class="w-full h-48 object-cover" onerror="this.onerror=null; this.outerHTML='<div class=\'w-full h-48 bg-gray-200 flex items-center justify-center\'><span class=\'text-gray-400 text-sm\'>Gambar Tidak Ditemukan</span></div>';">
                     @else
                         <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                             <span class="text-gray-400 text-sm">Tanpa Gambar</span>

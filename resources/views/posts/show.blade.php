@@ -27,7 +27,7 @@
         <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             @if($post->image)
                 <div class="w-full h-[400px] bg-gray-100">
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='<div class=\'w-full h-full bg-gray-200 flex items-center justify-center\'><span class=\'text-gray-400\'>Gambar Tidak Ditemukan</span></div>';">
                 </div>
             @endif
 
