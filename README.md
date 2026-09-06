@@ -3,9 +3,11 @@
 Website Portal Berita sederhana ini dibangun menggunakan framework **Laravel**. Sistem ini memiliki fitur CRUD (Create, Read, Update, Delete) untuk mengelola berita, lengkap dengan fitur relasi **Kategori**.
 
 ## 🚀 Fitur Utama
-1. **Manajemen Berita (CRUD)**: Menambah, melihat, mengedit, dan menghapus berita.
-2. **Kategori Berita**: Setiap berita dapat dikaitkan dengan sebuah kategori (Relasi 1-to-Many).
-3. **Upload Gambar**: Fitur opsional untuk mengunggah gambar sampul berita.
+1. **Pemisahan Halaman Publik & Admin**: Pengunjung hanya bisa membaca berita, sedangkan fitur manajemen dikunci untuk Admin.
+2. **Sistem Autentikasi (Breeze)**: Keamanan login dan manajemen sesi menggunakan Laravel Breeze standar industri.
+3. **Manajemen Berita (CRUD)**: Menambah, melihat, mengedit, dan menghapus berita (Khusus Admin).
+4. **Kategori Berita**: Setiap berita dapat dikaitkan dengan sebuah kategori (Relasi 1-to-Many).
+5. **Upload Gambar**: Fitur opsional untuk mengunggah gambar sampul berita lengkap dengan fitur *Preview Image* instan.
 
 ## 🛠️ Persyaratan Sistem
 - PHP >= 8.2
@@ -60,6 +62,9 @@ Ikuti langkah-langkah berikut untuk menginstal dan menjalankan proyek di kompute
    ```bash
    php artisan migrate:fresh --seed
    ```
+   *Perintah seeder ini akan otomatis membuatkan akun Admin bawaan untukmu:*
+   - **Email:** `admin@admin.com`
+   - **Password:** `password`
 
 ---
 
@@ -73,6 +78,8 @@ Setelah semua instalasi selesai, kamu bisa menyalakan server lokal Laravel:
    php artisan serve
    ```
 3. Buka browser dan akses alamat berikut:
-   **[http://localhost:8000/posts](http://localhost:8000/posts)**
+   **[http://localhost:8000/](http://localhost:8000/)**
 
-Sekarang aplikasi Portal Berita sudah siap digunakan! Kamu bisa mulai menambahkan berita baru dan memilih kategori yang sudah disediakan (Politik, Teknologi, Olahraga).
+Sekarang aplikasi Portal Berita sudah siap digunakan! 
+- Sebagai **Pengunjung**, kamu bisa melihat-lihat berita terbaru.
+- Sebagai **Admin**, klik tulisan **"Login Admin"** di pojok kanan atas, lalu masuk dengan akun `admin@admin.com` (`password`) untuk mulai menerbitkan berita baru!
