@@ -20,7 +20,8 @@
                 </div>
                 @auth
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('admin.posts.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
+                    <a href="{{ route('admin.posts.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Dashboard Admin</a>
+                    <a href="{{ route('admin.posts.create') }}" class="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
                         + Tambah Berita Baru
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -153,7 +154,26 @@
                 </div>
             @endforelse
         </div>
+
+        @if($posts->hasPages())
+            <div class="mt-12">
+                {{ $posts->appends(request()->query())->links() }}
+            </div>
+        @endif
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12 mt-12 border-t border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <span class="text-lg font-bold tracking-tight">Portal<span class="text-blue-300">Berita</span></span>
+                <p class="text-sm text-blue-200 mt-1">Jurnalisme independen mahasiswa PENS.</p>
+            </div>
+            <div class="text-sm text-blue-300">
+                &copy; {{ date('Y') }} EEPIS News and Network Team.
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

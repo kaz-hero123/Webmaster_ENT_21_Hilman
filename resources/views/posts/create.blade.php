@@ -8,10 +8,10 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50 mb-8">
+    <nav class="bg-blue-900 shadow-sm sticky top-0 z-50 mb-8">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <a href="{{ route('admin.posts.index') }}" class="text-gray-500 hover:text-gray-900 font-medium flex items-center gap-2 transition-colors">
+                <a href="{{ route('admin.posts.index') }}" class="text-blue-200 hover:text-white font-medium flex items-center gap-2 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Batal
                 </a>
@@ -88,7 +88,12 @@
                     <!-- Image Preview Container -->
                     <div id="image-preview-container" class="mt-4" style="display: none;">
                         <span class="block text-xs font-medium text-gray-500 mb-1">Preview Gambar:</span>
-                        <img id="image-preview" src="#" alt="Preview" class="h-48 w-auto object-cover rounded-md border border-gray-200 shadow-sm">
+                        <div class="relative inline-block">
+                            <img id="image-preview" src="#" alt="Preview" class="h-48 w-auto object-cover rounded-md border border-gray-200 shadow-sm">
+                            <button type="button" onclick="cancelImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-sm transition-colors" title="Batal pilih gambar">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -104,9 +109,17 @@
     <script>
         // Versi sangat simpel untuk level pemula
         function previewImage(event) {
-            var image = document.getElementById('image-preview');
-            image.src = URL.createObjectURL(event.target.files[0]);
-            document.getElementById('image-preview-container').style.display = 'block';
+            if(event.target.files.length > 0) {
+                var image = document.getElementById('image-preview');
+                image.src = URL.createObjectURL(event.target.files[0]);
+                document.getElementById('image-preview-container').style.display = 'block';
+            }
+        }
+
+        function cancelImage() {
+            document.getElementById('image').value = '';
+            document.getElementById('image-preview').src = '#';
+            document.getElementById('image-preview-container').style.display = 'none';
         }
     </script>
 </body>

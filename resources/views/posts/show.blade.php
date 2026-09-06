@@ -20,6 +20,7 @@
                 </div>
                 @auth
                 <div class="flex items-center gap-4">
+                    <a href="{{ route('admin.posts.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Dashboard Admin</a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-sm font-medium text-gray-500 hover:text-gray-900">Logout</button>
@@ -59,8 +60,8 @@
                     {{ $post->title }}
                 </h1>
 
-                <div class="prose prose-lg prose-blue max-w-none text-gray-700 whitespace-pre-wrap">
-                    {{ $post->content }}
+                <div class="prose prose-lg prose-blue max-w-none text-gray-700">
+                    {!! nl2br(e($post->content)) !!}
                 </div>
                 
                 <div class="mt-12 pt-8 border-t border-gray-100 flex justify-between items-center">
@@ -80,9 +81,15 @@
         </article>
     </main>
     
-    <footer class="bg-white border-t border-gray-100 py-8 mt-auto">
-        <div class="max-w-4xl mx-auto px-4 text-center text-gray-500 text-sm">
-            &copy; {{ date('Y') }} Portal Berita. Dibuat untuk keperluan evaluasi.
+    <footer class="bg-blue-900 text-white py-12 mt-12 border-t border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <span class="text-lg font-bold tracking-tight">Portal<span class="text-blue-300">Berita</span></span>
+                <p class="text-sm text-blue-200 mt-1">Jurnalisme independen mahasiswa PENS.</p>
+            </div>
+            <div class="text-sm text-blue-300">
+                &copy; {{ date('Y') }} EEPIS News and Network Team.
+            </div>
         </div>
     </footer>
 
