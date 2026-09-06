@@ -12,7 +12,7 @@ class PublicController extends Controller
     {
         $query = Post::with('category');
         
-        // Logika Sorting
+
         if ($request->sort == 'oldest') {
             $query->oldest();
         } else {

@@ -85,7 +85,7 @@
                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
                         </div>
                     </div>
-                    <!-- Image Preview Container -->
+
                     <div id="image-preview-container" class="mt-4" style="display: none;">
                         <span class="block text-xs font-medium text-gray-500 mb-1">Preview Gambar:</span>
                         <div class="relative inline-block">
@@ -107,7 +107,7 @@
     </main>
 
     <script>
-        // Versi sangat simpel untuk level pemula
+
         function previewImage(event) {
             if(event.target.files.length > 0) {
                 var image = document.getElementById('image-preview');

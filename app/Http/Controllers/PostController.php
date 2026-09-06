@@ -92,7 +92,7 @@ class PostController extends Controller
         $post->category_id = $request->input('category_id');
 
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
+
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
