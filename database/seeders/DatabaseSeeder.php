@@ -15,12 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $this->call(AdminSeeder::class);
 
         $kategoriPolitik = \App\Models\Category::create(['name' => 'Politik']);
         $kategoriTeknologi = \App\Models\Category::create(['name' => 'Teknologi']);

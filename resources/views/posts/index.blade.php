@@ -14,15 +14,28 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('posts.index') }}" class="text-2xl font-bold text-blue-600 tracking-tight">
+                    <a href="{{ url('/') }}" class="text-2xl font-bold text-blue-600 tracking-tight">
                         Portal<span class="text-gray-900">Berita</span>
                     </a>
                 </div>
-                <div>
-                    <a href="{{ route('posts.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
+                @auth
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('admin.posts.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">Dashboard Admin</a>
+                    <a href="{{ route('admin.posts.create') }}" class="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
                         + Tambah Berita Baru
                     </a>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-sm font-medium text-gray-500 hover:text-gray-900">Logout</button>
+                    </form>
                 </div>
+                @else
+                <div>
+                    <a href="{{ route('login') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900">
+                        Login Admin
+                    </a>
+                </div>
+                @endauth
             </div>
         </div>
     </nav>
@@ -34,7 +47,7 @@
                 Temukan Berita Terkini
             </h1>
             
-            <form action="{{ route('posts.index') }}" method="GET" class="max-w-5xl mx-auto bg-white p-2 rounded-lg shadow-lg flex flex-col md:flex-row gap-3">
+            <form action="{{ url()->current() }}" method="GET" class="max-w-5xl mx-auto bg-white p-2 rounded-lg shadow-lg flex flex-col md:flex-row gap-3">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul berita..." class="flex-1 px-4 py-3 border-none focus:ring-0 text-gray-900 rounded-md bg-gray-50 outline-none w-full">
                 
                 <div class="flex flex-col sm:flex-row gap-2 md:w-auto w-full">
@@ -56,7 +69,7 @@
                         Cari
                     </button>
                     @if(request('search') || request('category_id') || request('sort'))
-                        <a href="{{ route('posts.index') }}" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors w-full sm:w-auto text-center flex items-center justify-center">
+                        <a href="{{ url()->current() }}" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors w-full sm:w-auto text-center flex items-center justify-center">
                             Reset
                         </a>
                     @endif
@@ -115,11 +128,12 @@
                             </p>
                         </a>
                         
+                        @auth
                         <div class="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-3 items-center">
-                            <a href="{{ route('posts.edit', $post->id) }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                            <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
                                 Edit
                             </a>
-                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
+                            <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" onclick="return confirm('Hapus berita ini permanen?')" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">
@@ -127,6 +141,7 @@
                                 </button>
                             </form>
                         </div>
+                        @endauth
                     </div>
                 </div>
             @empty
@@ -139,7 +154,26 @@
                 </div>
             @endforelse
         </div>
+
+        @if($posts->hasPages())
+            <div class="mt-12">
+                {{ $posts->appends(request()->query())->links() }}
+            </div>
+        @endif
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12 mt-12 border-t border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <span class="text-lg font-bold tracking-tight">Portal<span class="text-blue-300">Berita</span></span>
+                <p class="text-sm text-blue-200 mt-1">Jurnalisme independen mahasiswa PENS.</p>
+            </div>
+            <div class="text-sm text-blue-300">
+                &copy; {{ date('Y') }} EEPIS News and Network Team.
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

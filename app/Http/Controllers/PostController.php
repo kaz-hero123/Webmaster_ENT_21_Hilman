@@ -15,8 +15,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::with('category');
-        
+        $query = Post::with('category')->latest();
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -26,16 +25,10 @@ class PostController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        if ($request->input('sort') === 'oldest') {
-            $query->oldest();
-        } else {
-            $query->latest();
-        }
-
-        $posts = $query->get();
+        $posts = $query->paginate(10);
         $categories = \App\Models\Category::all();
 
-        return view('posts.index', compact('posts', 'categories'));
+        return view('admin.index', compact('posts', 'categories'));
     }
 
     /**
@@ -65,7 +58,7 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil diterbitkan!');
     }
 
     /**
@@ -99,7 +92,7 @@ class PostController extends Controller
         $post->category_id = $request->input('category_id');
 
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
+
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
@@ -110,7 +103,7 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil diperbarui!');
     }
 
     /**
@@ -126,6 +119,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Berita berhasil dihapus!');
     }
 }
