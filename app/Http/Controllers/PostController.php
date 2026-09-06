@@ -25,10 +25,10 @@ class PostController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $posts = $query->get();
+        $posts = $query->paginate(10);
         $categories = \App\Models\Category::all();
 
-        return view('posts.index', compact('posts', 'categories'));
+        return view('admin.index', compact('posts', 'categories'));
     }
 
     /**

@@ -10,18 +10,27 @@ class PublicController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with('category')->latest();
+        $query = Post::with('category');
+        
+        // Logika Sorting
+        if ($request->sort == 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
+        }
 
         if ($request->has('search') && $request->search != '') {
-            $query->where('title', 'like', '%' . $request->search . '%')
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
                   ->orWhere('content', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->has('category_id') && $request->category_id != '') {
             $query->where('category_id', $request->category_id);
         }
 
-        $posts = $query->get();
+        $posts = $query->paginate(6);
         $categories = Category::all();
 
         return view('posts.index', compact('posts', 'categories'));
