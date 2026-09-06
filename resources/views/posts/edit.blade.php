@@ -11,7 +11,7 @@
     <nav class="bg-white shadow-sm sticky top-0 z-50 mb-8">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <a href="{{ route('posts.index') }}" class="text-gray-500 hover:text-gray-900 font-medium flex items-center gap-2 transition-colors">
+                <a href="{{ route('admin.posts.index') }}" class="text-gray-500 hover:text-gray-900 font-medium flex items-center gap-2 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Batal
                 </a>
@@ -43,7 +43,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="{{ route('admin.posts.update', $post->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
                 
