@@ -1,3 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+.prose img {
+    @apply rounded-xl shadow-sm mx-auto;
+}
+
+.prose a {
+    @apply text-brand-600 hover:text-brand-800 transition-colors underline decoration-brand-300 decoration-2 underline-offset-2;
+}
+
+.prose h2, .prose h3, .prose h4 {
+    @apply text-gray-900 font-bold tracking-tight;
+}
+
+.prose blockquote {
+    @apply border-l-4 border-brand-500 bg-brand-50 rounded-r-lg px-6 py-2 italic text-gray-700;
+}
