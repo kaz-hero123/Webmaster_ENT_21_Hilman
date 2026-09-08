@@ -3,25 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Berita Baru</title>
+    <title>Tulis Berita Baru - Admin PortalBerita</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+            'bold italic backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | image link | help',
+            content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:16px }',
+            skin: 'oxide',
+            // Turn off annoying upgrade prompts
+            promotion: false,
+            branding: false
+        });
+    </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen">
 
-    <nav class="bg-blue-900 shadow-sm sticky top-0 z-50 mb-8">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40 mb-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <a href="{{ route('admin.posts.index') }}" class="text-blue-200 hover:text-white font-medium flex items-center gap-2 transition-colors">
+                <a href="{{ route('admin.posts.index') }}" class="text-gray-500 hover:text-gray-900 font-medium flex items-center gap-2 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Batal
+                    Kembali ke Dashboard
                 </a>
+                <div class="text-sm font-medium text-gray-900 border-l border-gray-200 pl-4">
+                    Editor Berita
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-10">
-            <h1 class="text-3xl font-bold text-gray-900 mb-8">Tulis Berita Baru</h1>
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-10">
+            
+            <div class="mb-8 border-b border-gray-100 pb-6">
+                <h1 class="text-3xl font-bold text-gray-900">Tulis Berita Baru</h1>
+                <p class="mt-2 text-sm text-gray-500">Isi detail berita di bawah ini. Anda dapat menyimpan sebagai draft atau langsung mempublikasikannya.</p>
+            </div>
 
             @if($errors->any())
                 <div class="mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
@@ -43,71 +72,98 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
-                <div>
-                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                    <select name="category_id" id="category_id" class="w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        <option value="">Pilih Kategori</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Kolom Utama (Kiri) -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div>
+                            <label for="title" class="block text-sm font-bold text-gray-700 mb-1">Judul Berita <span class="text-red-500">*</span></label>
+                            <input type="text" name="title" id="title" value="{{ old('title') }}" required placeholder="Masukkan judul yang menarik..." class="w-full rounded-md border border-gray-300 py-3 px-4 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 text-xl font-medium text-gray-900 placeholder-gray-400">
+                        </div>
 
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Berita <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" required class="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-lg">
-                </div>
+                        <div>
+                            <label for="excerpt" class="block text-sm font-bold text-gray-700 mb-1">Ringkasan (Opsional)</label>
+                            <textarea name="excerpt" id="excerpt" rows="2" placeholder="Ringkasan singkat untuk ditampilkan di halaman depan (opsional)" class="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 text-sm">{{ old('excerpt') }}</textarea>
+                            <p class="mt-1 text-xs text-gray-500">Jika dikosongkan, paragraf pertama akan digunakan sebagai ringkasan.</p>
+                        </div>
 
-                <div>
-                    <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Isi Konten <span class="text-red-500">*</span></label>
-                    <textarea name="content" id="content" rows="10" required class="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">{{ old('content') }}</textarea>
-                </div>
+                        <div>
+                            <label for="content" class="block text-sm font-bold text-gray-700 mb-1">Isi Berita <span class="text-red-500">*</span></label>
+                            <!-- TinyMCE akan merender div ini -->
+                            <textarea name="content" id="content">{{ old('content') }}</textarea>
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Gambar Sampul (Opsional)</label>
-                    <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 bg-gray-50 hover:bg-gray-100 transition-colors">
-                        <div class="space-y-1 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <div class="flex text-sm text-gray-600 justify-center">
-                                <label for="image" class="relative cursor-pointer rounded-md bg-white font-medium text-blue-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:text-blue-500 px-1">
-                                    <span>Pilih file</span>
-                                    <input id="image" name="image" type="file" class="sr-only" onchange="previewImage(event)">
-                                </label>
-                                <p class="pl-1">atau drag and drop</p>
+                    <!-- Kolom Sidebar (Kanan) -->
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                            <h3 class="text-sm font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">Pengaturan Publikasi</h3>
+                            
+                            <div class="mb-4">
+                                <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                                <select name="category_id" id="category_id" class="w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 text-sm">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+
+                            <div class="mb-6 flex items-center">
+                                <input id="is_published" name="is_published" type="checkbox" value="1" {{ old('is_published', true) ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+                                <label for="is_published" class="ml-2 block text-sm text-gray-900 font-medium">
+                                    Publikasikan Sekarang
+                                </label>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-200">
+                                <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors">
+                                    Simpan Berita
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                            <h3 class="text-sm font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">Media</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
+                                <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 bg-white hover:bg-gray-50 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="image" class="relative cursor-pointer rounded-md bg-transparent font-medium text-brand-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-brand-500 hover:text-brand-500">
+                                                <span>Pilih file</span>
+                                                <input id="image" name="image" type="file" class="sr-only" onchange="previewImage(event)" accept="image/*">
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG up to 2MB</p>
+                                    </div>
+                                </div>
+
+                                <div id="image-preview-container" class="mt-4" style="display: none;">
+                                    <div class="relative inline-block w-full">
+                                        <img id="image-preview" src="#" alt="Preview" class="w-full h-auto object-cover rounded-md border border-gray-200 shadow-sm">
+                                        <button type="button" onclick="cancelImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-sm transition-colors" title="Hapus gambar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div id="image-preview-container" class="mt-4" style="display: none;">
-                        <span class="block text-xs font-medium text-gray-500 mb-1">Preview Gambar:</span>
-                        <div class="relative inline-block">
-                            <img id="image-preview" src="#" alt="Preview" class="h-48 w-auto object-cover rounded-md border border-gray-200 shadow-sm">
-                            <button type="button" onclick="cancelImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-sm transition-colors" title="Batal pilih gambar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-6">
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        Terbitkan Berita
-                    </button>
                 </div>
             </form>
         </div>
     </main>
 
     <script>
-
         function previewImage(event) {
             if(event.target.files.length > 0) {
                 var image = document.getElementById('image-preview');
