@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -48,8 +49,22 @@ class PostController extends Controller
 
         $post = new Post();
         $post->title = $request->input('title');
-        $post->content = $request->input('content');
+        
+        // Basic sanitization for the rich text content (you might want a robust HTML Purifier for production)
+        $content = $request->input('content');
+        // Remove potentially dangerous tags if needed, but TinyMCE usually handles basic sanitization on the client side.
+        $post->content = $content;
+
+        $post->excerpt = $request->input('excerpt') ?? Str::limit(strip_tags($content), 150);
         $post->category_id = $request->input('category_id');
+        $post->user_id = auth()->id();
+        
+        $isPublished = $request->has('is_published') ? true : false;
+        $post->is_published = $isPublished;
+        
+        if ($isPublished && !$post->published_at) {
+            $post->published_at = \Carbon\Carbon::now();
+        }
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
@@ -66,6 +81,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
+        // Not used in admin, but keeping it for resource completeness or preview
         $post = Post::with('category')->findOrFail($id);
         return view('posts.show', compact('post'));
     }
@@ -89,7 +105,17 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->title = $request->input('title');
         $post->content = $request->input('content');
+        $post->excerpt = $request->input('excerpt') ?? Str::limit(strip_tags($request->input('content')), 150);
         $post->category_id = $request->input('category_id');
+        
+        $isPublished = $request->has('is_published') ? true : false;
+        $post->is_published = $isPublished;
+        
+        if ($isPublished && !$post->published_at) {
+            $post->published_at = \Carbon\Carbon::now();
+        } elseif (!$isPublished) {
+             $post->published_at = null; // Optional: Reset published_at when draft
+        }
 
         if ($request->hasFile('image')) {
 

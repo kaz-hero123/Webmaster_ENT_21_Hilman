@@ -25,8 +25,10 @@ class UpdatePostRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'excerpt' => 'nullable|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'category_id' => 'nullable|exists:categories,id',
+            'is_published' => 'nullable|boolean',
         ];
     }
 }
